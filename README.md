@@ -21,7 +21,7 @@
 
    ```bash
    git clone git@github.com:LevKorobeinikov/cat_charity_fund.git
-   cd cat_charity_fund
+   cd qrkot_spreadsheets
    ```
 
 2. Создать и активировать виртуальное окружение:
