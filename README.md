@@ -1,4 +1,4 @@
-# QRkot_spreadseets# Приложение QRKot
+# Приложение QRKot
 
 ## Описание
 
