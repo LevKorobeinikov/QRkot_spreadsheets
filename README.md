@@ -14,13 +14,14 @@
 - **Alembic**
 - **Pydantic**
 - **Uvicorn**
+- **Google API**
 
 ## Запуск
 
 1. Клонирование репозитория:
 
    ```bash
-   git clone git@github.com:LevKorobeinikov/cat_charity_fund.git
+   git clone git@github.com:LevKorobeinikov/QRkot_spreadsheets.git
    cd QRkot_spreadsheets
    ```
 
@@ -53,5 +54,9 @@
    alembic upgrade
    uvicorn app.main:app --reload
    ```
+
+## Доступ к документации 
+1. Swagger - http://127.0.0.0:8000/docs
+2. ReDoc - http://127.0.0.0:8000/redoc
 
 ## Автор проекта - [Коробейников Лев Сергеевич](https://github.com/LevKorobeinikov)
