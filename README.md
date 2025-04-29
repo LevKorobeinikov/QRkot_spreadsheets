@@ -56,7 +56,7 @@
    ```
 
 ## Доступ к документации 
-1. Swagger - http://127.0.0.0:8000/docs
-2. ReDoc - http://127.0.0.0:8000/redoc
+1. [Swagger](http://127.0.0.0:8000/docs)
+2. [ReDoc](http://127.0.0.0:8000/redoc)
 
 ## Автор проекта - [Коробейников Лев Сергеевич](https://github.com/LevKorobeinikov)
