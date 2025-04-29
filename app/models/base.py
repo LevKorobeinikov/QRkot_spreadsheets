@@ -1,6 +1,13 @@
 from datetime import datetime
 
-from sqlalchemy import Boolean, CheckConstraint, Column, DateTime, Integer
+from sqlalchemy import (
+    Boolean,
+    CheckConstraint,
+    Column,
+    DateTime,
+    Integer,
+    text,
+)
 
 from app.core.db import Base
 
@@ -20,9 +27,14 @@ class BaseModel(Base):
 
     __table_args__ = (
         CheckConstraint(
-            "full_amount > 0 "
-            "AND invested_amount >= 0 AND invested_amount <= full_amount",
-            name="check_full_and_invested_amounts",
+            text("full_amount > 0"),
+            name="check_full_amount_positive",
+        ),
+        CheckConstraint(
+            text(
+                "(full_amount - invested_amount) >= 0 AND invested_amount >= 0"
+            ),
+            name="check_invested_amount_valid",
         ),
     )
 
@@ -30,9 +42,9 @@ class BaseModel(Base):
         return (
             f"{type(self).__name__}("
             f"id={self.id}, "
-            f"full_amount={self.full_amount}, "
-            f"invested_amount={self.invested_amount}, "
-            f"fully_invested={self.fully_invested}, "
-            f"create_date={self.create_date}, "
-            f"close_date={self.close_date})"
+            f"{self.full_amount=}, "
+            f"{self.invested_amount=}, "
+            f"{self.fully_invested=}, "
+            f"{self.create_date=}, "
+            f"{self.close_date=})"
         )
