@@ -43,7 +43,9 @@ async def spreadsheets_create(
         service.spreadsheets.create(json=spreadsheet_body)
     )
     spreadsheet_id = response["spreadsheetId"]
-    spreadsheet_url = f"https://docs.google.com/spreadsheets/d/{spreadsheet_id}"
+    spreadsheet_url = (
+        f"https://docs.google.com/spreadsheets/d/{spreadsheet_id}"
+    )
     return spreadsheet_id, spreadsheet_url
 
 
