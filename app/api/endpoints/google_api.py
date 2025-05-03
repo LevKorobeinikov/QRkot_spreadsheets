@@ -1,5 +1,6 @@
 from aiogoogle import Aiogoogle
-from fastapi import APIRouter, Depends
+from aiogoogle.excs import HTTPError
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.db import get_async_session
@@ -28,22 +29,25 @@ async def get_report(
     Только для суперюзеров.
     Возвращает ссылку на созданный отчёт в Google Таблицах.
     """
+    projects = await charity_project_crud.get_projects_by_completion_rate(
+        session,
+    )
+    spreadsheet_id, spreadsheet_url = await spreadsheets_create(
+        wrapper_services,
+    )
+    await set_user_permissions(
+        spreadsheet_id,
+        wrapper_services,
+    )
     try:
-        projects = await charity_project_crud.get_projects_by_completion_rate(
-            session,
-        )
-        spreadsheet_id, spreadsheet_url = await spreadsheets_create(
-            wrapper_services,
-        )
-        await set_user_permissions(
-            spreadsheet_id,
-            wrapper_services,
-        )
         await spreadsheets_update_value(
             spreadsheet_id,
             projects,
             wrapper_services,
         )
         return {"url": spreadsheet_url}
-    except Exception as error:
-        raise RuntimeError(f"Не удалось создать отчет: {error}")
+    except HTTPError as error:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Ошибка при обновлении Google таблицы: {error}",
+        )

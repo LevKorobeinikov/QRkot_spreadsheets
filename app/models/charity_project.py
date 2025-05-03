@@ -16,5 +16,5 @@ class CharityProject(BaseModel):
         base_repr = super().__repr__()
         return (
             f"{base_repr}, "
-            f"name={self.name}, description={self.description!r})"
+            f"{self.name=}, {self.description=!r}"
         )

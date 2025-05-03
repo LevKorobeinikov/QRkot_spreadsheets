@@ -2,13 +2,12 @@ from datetime import datetime
 
 from sqlalchemy import (
     Boolean,
-    CheckConstraint,
     Column,
     DateTime,
     Integer,
-    text,
 )
 
+from app.constants import FULL_AMOUNT_SUM, INVESTED_AMOUNT
 from app.core.db import Base
 
 
@@ -25,23 +24,20 @@ class BaseModel(Base):
     create_date = Column(DateTime, index=True, default=datetime.now)
     close_date = Column(DateTime, index=True)
 
-    __table_args__ = (
-        CheckConstraint(
-            text("full_amount > 0"),
-            name="check_full_amount_positive",
-        ),
-        CheckConstraint(
-            text(
-                "(full_amount - invested_amount) >= 0 AND invested_amount >= 0"
-            ),
-            name="check_invested_amount_valid",
-        ),
-    )
+    def validate_investment(self):
+        if self.full_amount <= 0:
+            raise ValueError(FULL_AMOUNT_SUM)
+        if not (self.full_amount >= self.invested_amount >= 0):
+            raise ValueError(INVESTED_AMOUNT)
+
+    def save(self, *args, **kwargs):
+        self.validate_investment()
+        super().save(*args, **kwargs)
 
     def __repr__(self):
         return (
             f"{type(self).__name__}("
-            f"id={self.id}, "
+            f"{self.id=}, "
             f"{self.full_amount=}, "
             f"{self.invested_amount=}, "
             f"{self.fully_invested=}, "

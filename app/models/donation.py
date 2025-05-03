@@ -16,5 +16,5 @@ class Donation(BaseModel):
         base_repr = super().__repr__()
         return (
             f"{base_repr}, "
-            f"user_id={self.user_id}, comment={self.comment!r})"
+            f"{self.user_id=}, {self.comment=!r})"
         )

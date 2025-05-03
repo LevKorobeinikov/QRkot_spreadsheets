@@ -7,14 +7,15 @@ from app.core.config import settings
 
 COLUMNS = 3
 ROWS = 100
+SPREADSHEET_TITLE_TEMPLATE = "Отчет от {report_date}"
 TABLE_HEADER_TEMPLATE = [
-    ["Отчет от {report_date}"],
+    [SPREADSHEET_TITLE_TEMPLATE],
     ["Топ проектов по скорости закрытия"],
     ["Название проекта", "Время сбора", "Описание"],
 ]
 SPREADSHEET_BODY_TEMPLATE = dict(
     properties=dict(
-        title="",
+        title=SPREADSHEET_TITLE_TEMPLATE,
         locale="ru_RU",
     ),
     sheets=[
@@ -36,16 +37,16 @@ async def spreadsheets_create(
 ) -> tuple[str, str]:
     service = await wrapper_services.discover("sheets", "v4")
     spreadsheet_body = deepcopy(spreadsheet_template)
-    spreadsheet_body["properties"]["title"] = (
-        f"Отчет от {datetime.now().strftime('%Y/%m/%d %H:%M:%S')}"
-    )
+    spreadsheet_body["properties"]["title"] = spreadsheet_body[
+        "properties"
+    ][
+        "title"
+    ].format(report_date=datetime.now().strftime("%Y/%m/%d %H:%M:%S"))
     response = await wrapper_services.as_service_account(
         service.spreadsheets.create(json=spreadsheet_body)
     )
     spreadsheet_id = response["spreadsheetId"]
-    spreadsheet_url = (
-        f"https://docs.google.com/spreadsheets/d/{spreadsheet_id}"
-    )
+    spreadsheet_url = response["spreadsheetUrl"]
     return spreadsheet_id, spreadsheet_url
 
 
@@ -69,7 +70,7 @@ async def set_user_permissions(
 
 
 async def spreadsheets_update_value(
-    spreadsheetid: str,
+    spreadsheet_id: str,
     projects: list,
     wrapper_services: Aiogoogle,
 ) -> None:
@@ -99,7 +100,7 @@ async def spreadsheets_update_value(
     update_body = {"majorDimension": "ROWS", "values": table_values}
     await wrapper_services.as_service_account(
         service.spreadsheets.values.update(
-            spreadsheetId=spreadsheetid,
+            spreadsheetId=spreadsheet_id,
             range=f"R1C1:R{num_rows}C{num_cols}",
             valueInputOption="USER_ENTERED",
             json=update_body,
