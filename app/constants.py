@@ -8,5 +8,3 @@ MAX_LENGHT = 100
 MIN_LENGHT = 1
 PASSWORD_LENGHT = 3
 USER_ID = "user.id"
-INVESTED_AMOUNT = "Инвестируемая сумма должна быть от 0 до полной суммы."
-FULL_AMOUNT_SUM = "Сумма должна быть больше 0"
